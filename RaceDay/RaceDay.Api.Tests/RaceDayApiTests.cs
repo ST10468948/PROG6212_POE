@@ -18,13 +18,16 @@ namespace RaceDay.Api.Tests
     {
         private readonly WebApplicationFactory<Program> _factory;
 
+        // Static in-memory database name ensures all tests in this fixture hit the same data store
+        private static readonly string SharedDatabaseName = "RaceDayTestDb_" + Guid.NewGuid().ToString();
+
         public RaceDayApiTests(WebApplicationFactory<Program> factory)
         {
-            
             _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
+                    // 1. Remove existing SQL Server DbContext registration
                     ServiceDescriptor descriptor = services.SingleOrDefault(
                         d => d.ServiceType == typeof(DbContextOptions<RaceDayDbContext>));
 
@@ -33,35 +36,36 @@ namespace RaceDay.Api.Tests
                         services.Remove(descriptor);
                     }
 
-                    
-                    string databaseName = "RaceDayTestDb_" + Guid.NewGuid().ToString();
-
+                    // 2. Register shared in-memory database
                     services.AddDbContext<RaceDayDbContext>(options =>
                     {
-                        options.UseInMemoryDatabase(databaseName);
+                        options.UseInMemoryDatabase(SharedDatabaseName);
                     });
 
-                    // Ensure database is created and default roles are seeded into the in-memory database
+                    // 3. Ensure database schema is created and default roles are seeded
                     ServiceProvider sp = services.BuildServiceProvider();
                     using (IServiceScope scope = sp.CreateScope())
                     {
                         RaceDayDbContext db = scope.ServiceProvider.GetRequiredService<RaceDayDbContext>();
                         db.Database.EnsureCreated();
 
-                        if (!db.Roles.Any())
+                        if (!db.Roles.Any(r => r.RoleName == "Organiser"))
                         {
                             db.Roles.Add(new Role { RoleID = 1, RoleName = "Organiser" });
-                            db.Roles.Add(new Role { RoleID = 2, RoleName = "Participant" });
-                            db.SaveChanges();
                         }
+
+                        if (!db.Roles.Any(r => r.RoleName == "Participant"))
+                        {
+                            db.Roles.Add(new Role { RoleID = 2, RoleName = "Participant" });
+                        }
+
+                        db.SaveChanges();
                     }
                 });
             });
         }
 
-        
         // Test 1: User Registration Success
-       
         [Fact]
         public async Task Register_ValidParticipant_Returns201Created()
         {
@@ -82,9 +86,7 @@ namespace RaceDay.Api.Tests
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         }
 
-        
-        // Test 2: Login Failure on Incorrect Credentials 
-        
+        // Test 2: Login Failure on Incorrect Credentials
         [Fact]
         public async Task Login_InvalidCredentials_Returns401Unauthorized()
         {
@@ -103,9 +105,7 @@ namespace RaceDay.Api.Tests
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        
-        // Test 3: Unauthenticated Access to Protected Route 
-        
+        // Test 3: Unauthenticated Access to Protected Route
         [Fact]
         public async Task CreateEvent_UnauthenticatedUser_Returns401Unauthorized()
         {
@@ -119,23 +119,21 @@ namespace RaceDay.Api.Tests
                 Location = "Durban",
                 DistanceKm = 89.0m,
                 EventType = "Run",
-                BannerUrl = null
+                BannerUrl = string.Empty
             };
 
-            // Act: Attempt to create an event without logging in first
+            // Act
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/events", request);
 
             // Assert
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        
         // Test 4: Role-Based Rejection - Participant cannot create Events
-        
         [Fact]
         public async Task CreateEvent_WhenUserIsParticipant_Returns403Forbidden()
         {
-            // Arrange: HandleCookies = true keeps the session cookie alive across requests
+            // Arrange
             WebApplicationFactoryClientOptions options = new WebApplicationFactoryClientOptions
             {
                 HandleCookies = true
@@ -144,7 +142,7 @@ namespace RaceDay.Api.Tests
 
             string participantEmail = "runner_" + Guid.NewGuid().ToString() + "@raceday.co.za";
 
-            // Register as Participant
+            // 1. Register as Participant
             RegisterRequest reg = new RegisterRequest
             {
                 FullName = "Sipho Runner",
@@ -152,17 +150,19 @@ namespace RaceDay.Api.Tests
                 Password = "Password123!",
                 Role = "Participant"
             };
-            await client.PostAsJsonAsync("/api/auth/register", reg);
+            HttpResponseMessage regRes = await client.PostAsJsonAsync("/api/auth/register", reg);
+            Assert.Equal(HttpStatusCode.Created, regRes.StatusCode);
 
-            // Login to initialize Participant session
+            // 2. Login to initialize session cookie
             LoginRequest login = new LoginRequest
             {
                 Email = participantEmail,
                 Password = "Password123!"
             };
-            await client.PostAsJsonAsync("/api/auth/login", login);
+            HttpResponseMessage loginRes = await client.PostAsJsonAsync("/api/auth/login", login);
+            Assert.Equal(HttpStatusCode.OK, loginRes.StatusCode);
 
-            // Act: Attempt to create an event with a Participant session
+            // 3. Act: Attempt to create an event with Participant credentials
             CreateEventRequest eventRequest = new CreateEventRequest
             {
                 EventName = "Trail Challenge",
@@ -171,7 +171,7 @@ namespace RaceDay.Api.Tests
                 Location = "Polokwane",
                 DistanceKm = 10.0m,
                 EventType = "Run",
-                BannerUrl = null
+                BannerUrl = string.Empty
             };
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/events", eventRequest);
 
@@ -179,9 +179,7 @@ namespace RaceDay.Api.Tests
             Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
-        
         // Test 5: Role-Based Success - Organiser can create Events (201 Created)
-        
         [Fact]
         public async Task CreateEvent_WhenUserIsOrganiser_Returns201Created()
         {
@@ -194,7 +192,7 @@ namespace RaceDay.Api.Tests
 
             string organiserEmail = "organiser_" + Guid.NewGuid().ToString() + "@raceday.co.za";
 
-            // Register as Organiser
+            // 1. Register as Organiser
             RegisterRequest reg = new RegisterRequest
             {
                 FullName = "Ansie Organiser",
@@ -202,17 +200,21 @@ namespace RaceDay.Api.Tests
                 Password = "Password123!",
                 Role = "Organiser"
             };
-            await client.PostAsJsonAsync("/api/auth/register", reg);
+            HttpResponseMessage regRes = await client.PostAsJsonAsync("/api/auth/register", reg);
+            string regContent = await regRes.Content.ReadAsStringAsync();
+            Assert.True(regRes.IsSuccessStatusCode, $"Organiser registration failed ({regRes.StatusCode}): {regContent}");
 
-            // Login to initialize Organiser session
+            // 2. Login to establish session
             LoginRequest login = new LoginRequest
             {
                 Email = organiserEmail,
                 Password = "Password123!"
             };
-            await client.PostAsJsonAsync("/api/auth/login", login);
+            HttpResponseMessage loginRes = await client.PostAsJsonAsync("/api/auth/login", login);
+            string loginContent = await loginRes.Content.ReadAsStringAsync();
+            Assert.True(loginRes.IsSuccessStatusCode, $"Organiser login failed ({loginRes.StatusCode}): {loginContent}");
 
-            // Act: Create an event
+            // 3. Act: Post the event
             CreateEventRequest eventRequest = new CreateEventRequest
             {
                 EventName = "Cape Town 10k",
@@ -221,22 +223,24 @@ namespace RaceDay.Api.Tests
                 Location = "Cape Town",
                 DistanceKm = 10.0m,
                 EventType = "Run",
-                BannerUrl = null
+                BannerUrl = string.Empty
             };
             HttpResponseMessage response = await client.PostAsJsonAsync("/api/events", eventRequest);
+            string responseContent = await response.Content.ReadAsStringAsync();
 
-            // Assert: Must succeed with 201 Created
-            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            // Assert: Must return 201 Created
+            Assert.True(response.StatusCode == HttpStatusCode.Created, $"Expected 201 Created but received {response.StatusCode}. Details: {responseContent}");
         }
 
-        
         // Test 6: Participant Enrolment Success (201 Created)
-        
         [Fact]
         public async Task EnrolInEvent_ValidParticipant_Returns201Created()
         {
-            // Setup Organiser to create Event and Category
-            WebApplicationFactoryClientOptions orgOptions = new WebApplicationFactoryClientOptions { HandleCookies = true };
+            // 1. Setup Organiser to create Event and Category
+            WebApplicationFactoryClientOptions orgOptions = new WebApplicationFactoryClientOptions
+            {
+                HandleCookies = true
+            };
             HttpClient orgClient = _factory.CreateClient(orgOptions);
 
             string orgEmail = "org_" + Guid.NewGuid().ToString() + "@raceday.co.za";
@@ -247,7 +251,11 @@ namespace RaceDay.Api.Tests
                 Password = "Password123!",
                 Role = "Organiser"
             });
-            await orgClient.PostAsJsonAsync("/api/auth/login", new LoginRequest { Email = orgEmail, Password = "Password123!" });
+            await orgClient.PostAsJsonAsync("/api/auth/login", new LoginRequest
+            {
+                Email = orgEmail,
+                Password = "Password123!"
+            });
 
             HttpResponseMessage eventRes = await orgClient.PostAsJsonAsync("/api/events", new CreateEventRequest
             {
@@ -256,7 +264,8 @@ namespace RaceDay.Api.Tests
                 EventDate = DateTime.UtcNow.AddDays(45),
                 Location = "Soweto",
                 DistanceKm = 10.0m,
-                EventType = "Run"
+                EventType = "Run",
+                BannerUrl = string.Empty
             });
             EventDto createdEvent = await eventRes.Content.ReadFromJsonAsync<EventDto>();
 
@@ -267,8 +276,11 @@ namespace RaceDay.Api.Tests
             });
             CategoryDto createdCategory = await catRes.Content.ReadFromJsonAsync<CategoryDto>();
 
-            // Setup Participant to enrol
-            WebApplicationFactoryClientOptions partOptions = new WebApplicationFactoryClientOptions { HandleCookies = true };
+            // 2. Setup Participant to enrol
+            WebApplicationFactoryClientOptions partOptions = new WebApplicationFactoryClientOptions
+            {
+                HandleCookies = true
+            };
             HttpClient partClient = _factory.CreateClient(partOptions);
 
             string partEmail = "runner_" + Guid.NewGuid().ToString() + "@raceday.co.za";
@@ -279,9 +291,13 @@ namespace RaceDay.Api.Tests
                 Password = "Password123!",
                 Role = "Participant"
             });
-            await partClient.PostAsJsonAsync("/api/auth/login", new LoginRequest { Email = partEmail, Password = "Password123!" });
+            await partClient.PostAsJsonAsync("/api/auth/login", new LoginRequest
+            {
+                Email = partEmail,
+                Password = "Password123!"
+            });
 
-            // Act: Enrol into the created event
+            // 3. Act: Enrol into the created event
             CreateEnrolmentRequest enrolReq = new CreateEnrolmentRequest
             {
                 EventID = createdEvent.EventID,

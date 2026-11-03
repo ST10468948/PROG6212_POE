@@ -12,7 +12,7 @@ namespace RaceDay.Api.Models
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public string ProfilePicUrl { get; set; }
+        public string? ProfilePicUrl { get; set; }
         public DateTime CreatedAt { get; set; }
 
         

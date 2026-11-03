@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +30,9 @@ namespace RaceDay.Api.Controllers
             List<Event> events = await _context.Events.ToListAsync();
             List<EventDto> eventDtos = new List<EventDto>();
 
-            // Maps each Event entity into an EventDto using a simple foreach loop
             foreach (Event item in events)
             {
-                EventDto dto = new EventDto
+                eventDtos.Add(new EventDto
                 {
                     EventID = item.EventID,
                     OrganiserID = item.OrganiserID,
@@ -43,8 +43,7 @@ namespace RaceDay.Api.Controllers
                     DistanceKm = item.DistanceKm,
                     EventType = item.EventType,
                     BannerUrl = item.BannerUrl
-                };
-                eventDtos.Add(dto);
+                });
             }
 
             return Ok(eventDtos);
@@ -81,18 +80,27 @@ namespace RaceDay.Api.Controllers
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> CreateEvent([FromBody] CreateEventRequest request)
         {
-            int organiserId = HttpContext.Session.GetInt32("UserId").Value;
+            if (request == null)
+            {
+                return BadRequest(new { message = "Invalid event data." });
+            }
+
+            int? sessionUserId = HttpContext.Session.GetInt32("UserId");
+            if (!sessionUserId.HasValue)
+            {
+                return Unauthorized(new { message = "Organiser session expired or invalid." });
+            }
 
             Event newEvent = new Event
             {
-                OrganiserID = organiserId,
+                OrganiserID = sessionUserId.Value,
                 EventName = request.EventName,
                 Description = request.Description,
                 EventDate = request.EventDate,
                 Location = request.Location,
                 DistanceKm = request.DistanceKm,
                 EventType = request.EventType,
-                BannerUrl = request.BannerUrl,
+                BannerUrl = request.BannerUrl ?? string.Empty,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -120,7 +128,16 @@ namespace RaceDay.Api.Controllers
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventRequest request)
         {
-            int organiserId = HttpContext.Session.GetInt32("UserId").Value;
+            if (request == null)
+            {
+                return BadRequest(new { message = "Invalid event update data." });
+            }
+
+            int? sessionUserId = HttpContext.Session.GetInt32("UserId");
+            if (!sessionUserId.HasValue)
+            {
+                return Unauthorized(new { message = "Organiser session expired or invalid." });
+            }
 
             Event existingEvent = await _context.Events.FindAsync(id);
             if (existingEvent == null)
@@ -128,8 +145,7 @@ namespace RaceDay.Api.Controllers
                 return NotFound(new { message = "Event not found." });
             }
 
-            // Ensures an Organiser can only update events they created
-            if (existingEvent.OrganiserID != organiserId)
+            if (existingEvent.OrganiserID != sessionUserId.Value)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new { message = "You can only edit events you created." });
             }
@@ -140,7 +156,7 @@ namespace RaceDay.Api.Controllers
             existingEvent.Location = request.Location;
             existingEvent.DistanceKm = request.DistanceKm;
             existingEvent.EventType = request.EventType;
-            existingEvent.BannerUrl = request.BannerUrl;
+            existingEvent.BannerUrl = request.BannerUrl ?? existingEvent.BannerUrl;
 
             await _context.SaveChangesAsync();
 
@@ -165,7 +181,11 @@ namespace RaceDay.Api.Controllers
         [AuthorizeRole("Organiser")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
-            int organiserId = HttpContext.Session.GetInt32("UserId").Value;
+            int? sessionUserId = HttpContext.Session.GetInt32("UserId");
+            if (!sessionUserId.HasValue)
+            {
+                return Unauthorized(new { message = "Organiser session expired or invalid." });
+            }
 
             Event existingEvent = await _context.Events.FindAsync(id);
             if (existingEvent == null)
@@ -173,7 +193,7 @@ namespace RaceDay.Api.Controllers
                 return NotFound(new { message = "Event not found." });
             }
 
-            if (existingEvent.OrganiserID != organiserId)
+            if (existingEvent.OrganiserID != sessionUserId.Value)
             {
                 return StatusCode(StatusCodes.Status403Forbidden, new { message = "You can only delete events you created." });
             }
