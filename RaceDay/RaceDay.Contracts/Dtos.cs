@@ -54,7 +54,7 @@ namespace RaceDay.Contracts
         public string Location { get; set; }
         public decimal DistanceKm { get; set; }
         public string EventType { get; set; } 
-        public string BannerUrl { get; set; }
+        public string? BannerUrl { get; set; }
     }
 
     public class UpdateEventRequest
@@ -65,7 +65,7 @@ namespace RaceDay.Contracts
         public string Location { get; set; }
         public decimal DistanceKm { get; set; }
         public string EventType { get; set; }
-        public string BannerUrl { get; set; }
+        public string? BannerUrl { get; set; }
     }
 
     public class EventDto
