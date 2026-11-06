@@ -22,3 +22,4 @@ C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Contracts\ob
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Contracts\obj\Debug\net8.0\refint\RaceDay.Contracts.dll
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Contracts\obj\Debug\net8.0\RaceDay.Contracts.pdb
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Contracts\obj\Debug\net8.0\ref\RaceDay.Contracts.dll
+C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Contracts\obj\Debug\net8.0\RaceDay.Contracts.csproj.AssemblyReference.cache
