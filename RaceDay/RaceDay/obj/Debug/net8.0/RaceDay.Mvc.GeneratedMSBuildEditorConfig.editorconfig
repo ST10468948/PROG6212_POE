@@ -30,8 +30,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/ENGEDZANI/Documents/GitHub/PROG6212_Part_1/RaceDay/RaceDay/Views/Participant/EventDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGljaXBhbnRcRXZlbnREZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ENGEDZANI/Documents/GitHub/PROG6212_Part_1/RaceDay/RaceDay/Views/Participant/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGljaXBhbnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/ENGEDZANI/Documents/GitHub/PROG6212_Part_1/RaceDay/RaceDay/Views/Participant/MyEvents.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGljaXBhbnRcTXlFdmVudHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ENGEDZANI/Documents/GitHub/PROG6212_Part_1/RaceDay/RaceDay/Views/Participant/MyResults.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGljaXBhbnRcTXlSZXN1bHRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/ENGEDZANI/Documents/GitHub/PROG6212_Part_1/RaceDay/RaceDay/Views/Participant/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFydGljaXBhbnRcUHJvZmlsZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/ENGEDZANI/Documents/GitHub/PROG6212_Part_1/RaceDay/RaceDay/Views/Shared/Error.cshtml]

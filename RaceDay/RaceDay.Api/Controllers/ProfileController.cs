@@ -43,7 +43,7 @@ namespace RaceDay.Api.Controllers
 
             UserProfileDto dto = new UserProfileDto
             {
-                UserId = user.UserID,
+                UserID = user.UserID,
                 FullName = user.FullName,
                 Email = user.Email,
                 Role = user.Role.RoleName,
@@ -80,7 +80,7 @@ namespace RaceDay.Api.Controllers
 
             UserProfileDto dto = new UserProfileDto
             {
-                UserId = user.UserID,
+                UserID = user.UserID,
                 FullName = user.FullName,
                 Email = user.Email,
                 Role = user.Role.RoleName,

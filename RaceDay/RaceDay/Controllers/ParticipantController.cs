@@ -22,7 +22,7 @@ namespace RaceDay.Mvc.Controllers
         private bool IsParticipant() =>
             string.Equals(HttpContext.Session.GetString("Role"), "Participant", StringComparison.OrdinalIgnoreCase);
 
-        // GET: Participant/Index (Browse & Filter Upcoming Events)
+        
         public async Task<IActionResult> Index(string? eventType, string? search)
         {
             if (!IsParticipant()) return RedirectToAction("Login", "Auth");
@@ -30,7 +30,7 @@ namespace RaceDay.Mvc.Controllers
             var res = await _api.SendAsync(HttpMethod.Get, "api/events");
             var events = await _api.ReadAsync<List<EventDto>>(res) ?? new();
 
-            // Filter upcoming events
+            
             events = events.Where(e => e.EventDate >= DateTime.Today).ToList();
 
             if (!string.IsNullOrWhiteSpace(eventType))
@@ -43,7 +43,7 @@ namespace RaceDay.Mvc.Controllers
             return View(events);
         }
 
-        // GET: Participant/EventDetails/{id}
+        
         public async Task<IActionResult> EventDetails(int id)
         {
             if (!IsParticipant()) return RedirectToAction("Login", "Auth");
@@ -63,7 +63,7 @@ namespace RaceDay.Mvc.Controllers
             return View(eventDto);
         }
 
-        // POST: Participant/Enrol
+        
         [HttpPost]
         public async Task<IActionResult> Enrol(int eventId, int categoryId)
         {
@@ -82,7 +82,7 @@ namespace RaceDay.Mvc.Controllers
             return RedirectToAction(nameof(MyEvents));
         }
 
-        // GET: Participant/MyEvents
+       
         public async Task<IActionResult> MyEvents()
         {
             if (!IsParticipant()) return RedirectToAction("Login", "Auth");
@@ -92,7 +92,7 @@ namespace RaceDay.Mvc.Controllers
             return View(list);
         }
 
-        // GET: Participant/MyResults
+        
         public async Task<IActionResult> MyResults()
         {
             if (!IsParticipant()) return RedirectToAction("Login", "Auth");
@@ -102,7 +102,7 @@ namespace RaceDay.Mvc.Controllers
             return View(list);
         }
 
-        // GET: Participant/Profile
+      
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
@@ -119,13 +119,13 @@ namespace RaceDay.Mvc.Controllers
             return View(profile);
         }
 
-        // POST: Participant/Profile (Update info + upload avatar to Azure via API)
+       
         [HttpPost]
         public async Task<IActionResult> Profile(UserProfileDto model, IFormFile? profilePicture)
         {
             if (!IsParticipant()) return RedirectToAction("Login", "Auth");
 
-            // If a profile picture was selected, send it to the API to upload to Azure Blob Storage
+            
             if (profilePicture != null && profilePicture.Length > 0)
             {
                 var uploadRes = await _api.UploadFileAsync("api/uploads/avatar", profilePicture);
@@ -146,7 +146,7 @@ namespace RaceDay.Mvc.Controllers
                 return View(model);
             }
 
-            // Keep session display name synchronized
+            
             HttpContext.Session.SetString("DisplayName", model.FullName);
 
             TempData["Success"] = "Profile updated successfully!";

@@ -1,0 +1,58 @@
+﻿@model RaceDay.Contracts.EventDto
+
+@{
+    ViewData["Title"] = Model.EventName;
+    var categories = ViewBag.Categories as List<RaceDay.Contracts.CategoryDto> ?? new();
+}
+
+<div class="container py-3">
+    <div class="card shadow-sm border-0 overflow-hidden mb-4">
+        @if (!string.IsNullOrWhiteSpace(Model.BannerUrl))
+        {
+            <img src="@Model.BannerUrl" alt="@Model.EventName" class="w-100" style="max-height: 320px; object-fit: cover;" />
+        }
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="badge bg-warning text-dark fs-6">@Model.EventType</span>
+                <span class="text-muted">📅 @Model.EventDate.ToString("dddd, dd MMMM yyyy")</span>
+            </div>
+            <h1 class="fw-bold mb-3">@Model.EventName</h1>
+            <p class="lead text-secondary">📍 Location: <strong>@Model.Location</strong> | Distance: <strong>@Model.DistanceKm km</strong></p>
+            <hr />
+            <h5 class="fw-bold">Description</h5>
+            <p class="mb-4">@Model.Description</p>
+
+            <h4 class="fw-bold mb-3">Enter This Event</h4>
+            @if (!categories.Any())
+            {
+                <div class="alert alert-warning border-0">
+                    No race categories are available for registration right now.
+                </div>
+            }
+            else
+            {
+                <form asp-action="Enrol" method="post" class="card bg-light border-0 p-3">
+                    <input type="hidden" name="eventId" value="@Model.EventID" />
+                    <div class="row align-items-end g-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Select Category</label>
+                            <select name="categoryId" class="form-select" required>
+                                <option value="">-- Choose Category --</option>
+                                @foreach (var cat in categories)
+                                {
+                                    <option value="@cat.CategoryID">@cat.CategoryName (@cat.Description)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success fw-bold w-100 py-2">
+                                🏁 Enter Event
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">← Back to All Events</a>
+</div>

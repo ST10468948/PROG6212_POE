@@ -1,0 +1,55 @@
+﻿@model RaceDay.Contracts.UserProfileDto
+
+@{
+    ViewData["Title"] = "Participant Profile";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-dark text-white text-center py-3">
+                <h4 class="mb-0 fw-bold">Participant Profile</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    @if (!string.IsNullOrWhiteSpace(Model?.ProfilePicUrl))
+                    {
+                        <img src="@Model.ProfilePicUrl" alt="Profile Picture" class="rounded-circle img-thumbnail shadow-sm mb-2" style="width: 130px; height: 130px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle bg-secondary text-white d-inline-flex justify-content-center align-items-center shadow-sm mb-2" style="width: 130px; height: 130px; font-size: 2.5rem;">
+                            👤
+                        </div>
+                    }
+                </div>
+
+                <form asp-action="Profile" method="post" enctype="multipart/form-data">
+                    <input type="hidden" asp-for="UserID" />
+                    <input type="hidden" asp-for="ProfilePicUrl" />
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-semibold">Full Name</label>
+                        <input asp-for="FullName" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-semibold">Email Address</label>
+                        <input asp-for="Email" class="form-control" readonly />
+                        <small class="text-muted">Email address cannot be changed.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Profile Picture (Azure Blob Storage)</label>
+                        <input type="file" name="profilePicture" class="form-control" accept="image/*" />
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning text-dark fw-bold py-2">Save Changes</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Back to Events</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

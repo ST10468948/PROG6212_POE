@@ -30,7 +30,7 @@ namespace RaceDay.Contracts
     // User Profile
     public class UserProfileDto
     {
-        public int UserId { get; set; }
+        public int UserID { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
@@ -139,10 +139,12 @@ namespace RaceDay.Contracts
         public int ParticipantID { get; set; }
         public string ParticipantName { get; set; }
         public string EventName { get; set; }
+        public DateTime EventDate { get; set; }
         public string CategoryName { get; set; }
         public string FinishTime { get; set; }
         public int Position { get; set; }
         public int TotalFinishers { get; set; }
         public DateTime RecordedDate { get; set; }
+        public int FinishingPosition { get; set; }
     }
 }
