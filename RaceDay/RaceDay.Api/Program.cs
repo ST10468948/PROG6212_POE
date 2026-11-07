@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
+using RaceDay.Api.Services;
 
 namespace RaceDay.Api
 {
@@ -18,6 +19,9 @@ namespace RaceDay.Api
                 options.Cookie.IsEssential = true;
                 options.Cookie.SameSite = SameSiteMode.Lax;
             });
+
+            // Register Azure Blob Storage service for cloud file uploads
+            builder.Services.AddScoped<BlobStorageService>();
 
             // Addition of services 
 
