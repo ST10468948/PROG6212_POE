@@ -299,10 +299,10 @@ C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debu
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\swae.build.ex.cache
-C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\RaceDay..67FF5970.Up2Date
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\RaceDay.Api.dll
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\refint\RaceDay.Api.dll
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\RaceDay.Api.pdb
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\RaceDay.Api.genruntimeconfig.cache
 C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\ref\RaceDay.Api.dll
+C:\Users\ENGEDZANI\Documents\GitHub\PROG6212_Part_1\RaceDay\RaceDay.Api\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
