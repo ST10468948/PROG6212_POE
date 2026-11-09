@@ -225,10 +225,6 @@
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "site.css",
@@ -238,8 +234,7 @@
               "RelativeToolTip": "RaceDay\\wwwroot\\css\\site.css",
               "ViewState": "AgIAAFoAAAAAAAAAAAAIwG4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2026-11-09T06:31:24.465Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-11-09T06:31:24.465Z"
             },
             {
               "$type": "Document",
@@ -311,8 +306,7 @@
               "RelativeToolTip": "RaceDay.Api\\RaceDay.Api.csproj",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAABoAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-10-12T21:11:05.233Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-10-12T21:11:05.233Z"
             },
             {
               "$type": "Document",
