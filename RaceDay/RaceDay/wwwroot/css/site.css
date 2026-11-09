@@ -1,22 +1,110 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+/* RaceDay Visual Theme Palette */
+:root {
+    --rd-bg-dark: #0F172A;
+    --rd-white: #FFFFFF;
+    --rd-emerald: #10B981;
+    --rd-amber: #F59E0B;
+    --rd-danger: #EF4444;
+    --rd-muted: #64748B;
+    --rd-card-bg: #FFFFFF;
+    --rd-page-bg: #F8FAFC;
+    --rd-text-main: #0F172A;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--rd-page-bg);
+    color: var(--rd-text-main);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Navbar & Header Accents */
+.navbar-dark.bg-dark {
+    background-color: var(--rd-bg-dark) !important;
+    border-bottom: 2px solid var(--rd-amber);
+}
+
+.table-dark {
+    background-color: var(--rd-bg-dark) !important;
+    color: var(--rd-white) !important;
+}
+
+    .table-dark th {
+        background-color: var(--rd-bg-dark) !important;
+        border-color: #1E293B !important;
+    }
+
+/* Action Buttons */
+.btn-warning {
+    background-color: var(--rd-amber) !important;
+    border-color: var(--rd-amber) !important;
+    color: var(--rd-bg-dark) !important;
+    font-weight: 600;
+}
+
+    .btn-warning:hover {
+        background-color: #D97706 !important;
+        border-color: #D97706 !important;
+        color: var(--rd-white) !important;
+    }
+
+.btn-success {
+    background-color: var(--rd-emerald) !important;
+    border-color: var(--rd-emerald) !important;
+    color: var(--rd-white) !important;
+    font-weight: 600;
+}
+
+    .btn-success:hover {
+        background-color: #059669 !important;
+        border-color: #059669 !important;
+    }
+
+/* Rubric Status Badges */
+.badge.bg-success,
+.badge-confirmed {
+    background-color: var(--rd-emerald) !important;
+    color: var(--rd-white) !important;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.badge.bg-warning,
+.badge-pending {
+    background-color: var(--rd-amber) !important;
+    color: var(--rd-bg-dark) !important;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+}
+
+.badge.bg-danger,
+.badge-cancelled {
+    background-color: var(--rd-danger) !important;
+    color: var(--rd-white) !important;
+}
+
+/* Elevation & Interactive Cards */
+.card {
+    background-color: var(--rd-card-bg);
+    border: 1px solid #E2E8F0;
+    border-radius: 0.5rem;
+    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04) !important;
+    }
+
+/* Form Validation Feedback */
+.field-validation-error {
+    color: var(--rd-danger);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+    font-weight: 500;
+}
+
+.input-validation-error {
+    border-color: var(--rd-danger) !important;
+    box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important;
 }
