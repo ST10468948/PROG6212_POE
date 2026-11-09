@@ -20,26 +20,23 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Locate Solution and Project Files
+    - name: Automatically Find Solution and Test Files
       run: |
-        echo "=== Repository Tree ==="
-        find . -maxdepth 3 -not -path '*/.*'
-        
         SLN_PATH=$(find . -name "*.sln" | head -n 1)
         echo "SLN_PATH=$SLN_PATH" >> $GITHUB_ENV
-        echo "Found Solution at: $SLN_PATH"
+        echo "Found solution at: $SLN_PATH"
 
         TEST_PATH=$(find . -name "*Tests.csproj" | head -n 1)
         echo "TEST_PATH=$TEST_PATH" >> $GITHUB_ENV
-        echo "Found Test Project at: $TEST_PATH"
+        echo "Found tests at: $TEST_PATH"
 
     - name: Restore dependencies
       run: dotnet restore "$SLN_PATH"
 
-    - name: Build Solution (API, MVC & Contracts)
+    - name: Build Solution
       run: dotnet build "$SLN_PATH" --no-restore -c Release
 
-    - name: Run Automated API Tests
+    - name: Run Automated Tests
       run: |
         if [ -n "$TEST_PATH" ]; then
           dotnet test "$TEST_PATH" --no-build --verbosity normal -c Release
