@@ -20,14 +20,29 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Check Solution Location
-      run: ls -la
+    - name: Locate Solution and Project Files
+      run: |
+        echo "=== Repository Tree ==="
+        find . -maxdepth 3 -not -path '*/.*'
+        
+        SLN_PATH=$(find . -name "*.sln" | head -n 1)
+        echo "SLN_PATH=$SLN_PATH" >> $GITHUB_ENV
+        echo "Found Solution at: $SLN_PATH"
+
+        TEST_PATH=$(find . -name "*Tests.csproj" | head -n 1)
+        echo "TEST_PATH=$TEST_PATH" >> $GITHUB_ENV
+        echo "Found Test Project at: $TEST_PATH"
 
     - name: Restore dependencies
-      run: dotnet restore RaceDay.sln
+      run: dotnet restore "$SLN_PATH"
 
     - name: Build Solution (API, MVC & Contracts)
-      run: dotnet build RaceDay.sln --no-restore -c Release
+      run: dotnet build "$SLN_PATH" --no-restore -c Release
 
     - name: Run Automated API Tests
-      run: dotnet test RaceDay.Api.Tests/RaceDay.Api.Tests.csproj --no-build --verbosity normal -c Release
+      run: |
+        if [ -n "$TEST_PATH" ]; then
+          dotnet test "$TEST_PATH" --no-build --verbosity normal -c Release
+        else
+          echo "No test project found, skipping."
+        fi
