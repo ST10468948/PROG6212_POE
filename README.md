@@ -1,131 +1,323 @@
-# RaceDay – Event Management System (PROG6212 PoE)
+================================================================================
 
-https://github.com/ST10468948/PROG6212_Part_1.git
+                    RACEDAY EVENT MANAGEMENT PLATFORM
 
-RaceDay is a cloud-ready platform engineered to streamline event administration for South African road running, walking, and cycling events—ranging from community park runs to major regional races like the Comrades Marathon, Soweto Marathon, and Cape Town Cycle Tour. 
+               PROG6212 Portfolio of Evidence (PoE) Final
 
-The system transitions traditional spreadsheet management into a secure, tiered architecture consisting of an ASP.NET Core Web API, Entity Framework Core Code-First data persistence, and automated xUnit integration testing[cite: 1].
-
----
-
-## Part 2 Architectural Overview
-
-Part 2 introduces a multi-project .NET 8 solution implementing a RESTful API with Code-First database persistence and automated CI/CD:
-
-* **`RaceDay.Contracts`**: Class library containing POCO Data Transfer Objects (DTOs) with automatic properties for decoupling domain entities from network serialization.
-* **`RaceDay.Api`**: ASP.NET Core Web API implementing RESTful controllers, Entity Framework Core `DbContext`, BCrypt password hashing, and custom session-based `AuthorizeRole` action filters.
-* **`RaceDay.Api.Tests`**: Automated test suite executing xUnit integration tests with `WebApplicationFactory` and an in-memory database to validate authentication and role enforcement without affecting SQL Server.
-
----
-
-## Domain Entities & Database Schema
-
-The database model is managed via EF Core Code-First migrations applied to SQL Server, enforcing key constraints and referential integrity:
-
-1. **`Roles`**: Defines system authorization tiers (`Organiser` and `Participant`).
-2. **`Users`**: Stores participant and organizer accounts with unique email constraints and BCrypt password hashes.
-3. **`Events`**: Manages event details, dates, categories, locations, and distances.
-4. **`Categories`**: Defines distance, age, or competitive tiers within an event.
-5. **`Enrolments`**: Handles registrations linking a participant, event, and category, preventing duplicate event entries.
-6. **`Results`**: Stores finishing times, overall rankings, and total field sizes recorded by the event organizer.
-
----
-
-## REST API Endpoint Summary
-
-| Controller | Method | Endpoint | Role Restriction | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| **Auth** | `POST` | `/api/auth/register` | Public | Registers a new account as Organiser or Participant. |
-| **Auth** | `POST` | `/api/auth/login` | Public | Validates credentials and sets server session cookies. |
-| **Auth** | `POST` | `/api/auth/logout` | Authenticated | Clears the active session. |
-| **Profile** | `GET` | `/api/profile/me` | Authenticated | Retrieves current logged-in profile details. |
-| **Profile** | `PUT` | `/api/profile/me` | Authenticated | Updates profile full name and photo URL. |
-| **Events** | `GET` | `/api/events` | Public | Retrieves all active events. |
-| **Events** | `GET` | `/api/events/{id}` | Public | Retrieves specific event details. |
-| **Events** | `POST` | `/api/events` | `Organiser` | Creates a new race event. |
-| **Events** | `PUT` | `/api/events/{id}` | `Organiser` | Updates an event owned by the logged-in organiser. |
-| **Events** | `DELETE` | `/api/events/{id}` | `Organiser` | Deletes an owned event. |
-| **Categories** | `GET` | `/api/events/{id}/categories` | Public | Retrieves categories for an event. |
-| **Categories** | `POST` | `/api/events/{id}/categories` | `Organiser` | Adds a category to an event. |
-| **Enrolments** | `POST` | `/api/enrolments` | `Participant` | Enrols into an event and category. |
-| **Enrolments** | `GET` | `/api/enrolments/mine` | `Participant` | Lists all personal event enrolments. |
-| **Enrolments** | `GET` | `/api/enrolments/event/{id}` | `Organiser` | Lists all participant entries for an event. |
-| **Results** | `POST` | `/api/results` | `Organiser` | Records finishing position and race time. |
-| **Results** | `GET` | `/api/results/mine` | `Participant` | Retrieves race history and finishing results. |
-
----
-
-## Getting Started & Local Setup
-
-### Prerequisites
-* Visual Studio 2022 (v17.8 or higher) with **ASP.NET and web development** workload.
-* .NET 8.0 SDK.
-* Microsoft SQL Server / LocalDB / SQL Server Express and SSMS.
-
-### Database Migration
-1. Open `RaceDay.sln` in Visual Studio 2022.
-2. Verify the connection string in `RaceDay.Api/appsettings.json` points to your SQL Server instance:
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=localhost;Database=RaceDayDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;"
-   }
-
-   Open Package Manager Console (Tools -> NuGet Package Manager -> Package Manager Console).
-
-Set the Default project to RaceDay.Api and apply migrations:
-
-PowerShell
-Update-Database
-Running the API
-Set RaceDay.Api as the startup project in Solution Explorer.
-
-Press F5 or Ctrl + F5.
-
-Swagger UI will launch in your browser at https://localhost:<port>/swagger to interactively test endpoints.
-
-Automated Testing & CI/CD Pipeline
-The project includes automated integration tests under RaceDay.Api.Tests covering critical authentication and authorization scenarios:
-
-User registration validation (201 Created).
-
-Login credential verification and rejection (401 Unauthorized).
-
-Unauthenticated resource access rejection (401 Unauthorized).
-
-Role authorization boundary testing (verifying Participants receive 403 Forbidden when attempting Organiser actions).
-
-Organiser operational authorization verification (201 Created).
-
-To run tests locally via the .NET CLI:
-
-Bash
-dotnet test RaceDay.sln
-GitHub Actions CI Workflow
-Every push and pull request to the main branch triggers .github/workflows/dotnet-ci.yml, which provisions an Ubuntu runner, restores NuGet packages, builds the multi-project solution in Release configuration, and executes all xUnit integration tests against an in-memory database instance.
-
-Part 2 Deliverables & Documentation
-Source Code: Fully implemented .NET 8 Web API, POCO DTO contracts, and xUnit integration test suite.
-
-Database Setup: EF Core Code-First migration files located in RaceDay.Api/Migrations/.
-
-CI/CD Pipeline: GitHub Actions workflow file located at .github/workflows/dotnet-ci.yml.
-
-Demonstration Video: Unlisted YouTube presentation link: [INSERT YOUR YOUTUBE URL HERE]
-
-[cite: 1]
-
-References
+================================================================================
 
 
-GitHub, 2024. GitHub Actions Documentation: Building and testing .NET. Available at: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net .
 
-Microsoft, 2024. Create Data Transfer Objects (DTOs). Microsoft Learn. Available at: https://learn.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5 .
+Repository URL : https://github.com/ST10468948/PROG6212_POE.git
 
-Microsoft, 2024. Integration tests in ASP.NET Core. Microsoft Learn. Available at: https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests .
+Student Number : ST10468948
 
-Microsoft, 2024. Overview of Entity Framework Core. Microsoft Learn. Available at: https://learn.microsoft.com/en-us/ef/core/ .
+CI Build Badge : https://github.com/ST10468948/PROG6212_POE/actions/workflows/ci.yml
 
-Microsoft, 2024. Session and state management in ASP.NET Core. Microsoft Learn. Available at: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state .
+Video Demo URL : 
 
-OpenAI, 2024. GitHub Copilot (Version 1.84) [Large language model]. Available through Visual Studio 2022 integration. Used as a peer programmer for code structure recommendations, debugging EF Core model key constraints, and generating xUnit integration test scaffolding.
 
+
+--------------------------------------------------------------------------------
+
+1. EXECUTIVE SUMMARY & SYSTEM OVERVIEW
+
+--------------------------------------------------------------------------------
+
+RaceDay is an enterprise-grade, cloud-ready event administration platform built
+
+for South African road running, cycling, and trail competitions (e.g., Comrades
+
+Marathon, Soweto Marathon, Cape Town Cycle Tour, and community fitness runs).
+
+
+
+The platform transitions fragmented, spreadsheet-based event management into a
+
+secure, multi-tier .NET 8 architecture featuring:
+
+  - An ASP.NET Core 8 Web API with EF Core Code-First database persistence.
+
+  - An ASP.NET Core 8 MVC dynamic front-end communicating strictly over HTTP.
+
+  - Azure Blob Storage integration for event banners and participant avatars.
+
+  - Automated xUnit integration tests validating authentication and role tiers.
+
+  - Multi-stage Linux Docker containerization with host gateway integration.
+
+
+
+User Roles:
+
+  - Organisers  : Create/manage events, configure category tiers, upload race
+
+                  banners, view participant registrations, and publish results.
+
+  - Participants: Register/login, browse active races, enrol into categories,
+
+                  track personal statuses, upload avatars, and view results.
+
+
+
+--------------------------------------------------------------------------------
+
+2. PROJECT ARCHITECTURE & COMPONENT BREAKDOWN
+
+--------------------------------------------------------------------------------
+
+  - RaceDay.Contracts : Shared C# class library containing POCO Data Transfer
+
+                        Objects (DTOs) ensuring decoupled network serialization.
+
+  - RaceDay.Api       : RESTful Web API handling business logic, BCrypt hashing,
+
+                        session tokens, EF Core migrations, and media uploads.
+
+  - RaceDay.Api.Tests : xUnit test suite using WebApplicationFactory and an
+
+                        in-memory database to test auth barriers and endpoints.
+
+  - RaceDay.Mvc       : Responsive MVC client with sporting visual theme palette
+
+                        (#10B981, #FFFFFF, #0F172A, #F59E0B) and role-aware navigation.
+
+  - Azure Blob Storage: Cloud persistence for race banners and user avatars.
+
+
+
+--------------------------------------------------------------------------------
+
+3. DATABASE SCHEMA & ENTITIES
+
+--------------------------------------------------------------------------------
+
+Managed through EF Core Code-First migrations on SQL Server:
+
+  1. Roles      : System authorization tiers ('Organiser', 'Participant').
+
+  2. Users      : Profile credentials, unique email constraint, BCrypt password.
+
+  3. Events     : Event details, date, venue, distance, banner URL, OrganiserID.
+
+  4. Categories : Distance, age, or competitive tiers linked to an event.
+
+  5. Enrolments : Participant race registrations with duplicate-entry constraints.
+
+  6. Results    : Finishing times, official positions, and total field sizes.
+
+
+
+--------------------------------------------------------------------------------
+
+4. REST API ENDPOINTS SUMMARY
+
+--------------------------------------------------------------------------------
+
+Auth:
+
+  POST /api/auth/register          [Public]        Create account
+
+  POST /api/auth/login             [Public]        Authenticate & set session
+
+  POST /api/auth/logout            [Authenticated] Terminate active session
+
+
+
+Profile & Cloud Uploads:
+
+  GET  /api/profile/me             [Authenticated] Retrieve current profile
+
+  PUT  /api/profile/me             [Authenticated] Update name and avatar
+
+  POST /api/uploads/banner         [Organiser]     Upload race banner to Azure
+
+  POST /api/uploads/avatar         [Authenticated] Upload profile photo to Azure
+
+
+
+Events & Categories:
+
+  GET  /api/events                 [Public]        List all active races
+
+  GET  /api/events/{id}            [Public]        Retrieve event details
+
+  POST /api/events                 [Organiser]     Create new event
+
+  PUT  /api/events/{id}            [Organiser]     Update owned event
+
+  DEL  /api/events/{id}            [Organiser]     Remove owned event
+
+  GET  /api/events/{id}/categories [Public]        Get categories for event
+
+  POST /api/events/{id}/categories [Organiser]     Add category to event
+
+
+
+Enrolments & Results:
+
+  POST /api/enrolments             [Participant]  Enrol in event category
+
+  GET  /api/enrolments/mine        [Participant]  View personal enrolments
+
+  GET  /api/enrolments/event/{id}  [Organiser]    View registered participants
+
+  POST /api/results                [Organiser]    Record finish time & position
+
+  GET  /api/results/mine           [Participant]  View personal race results
+
+
+
+--------------------------------------------------------------------------------
+
+5. EXECUTION & DEPLOYMENT INSTRUCTIONS
+
+--------------------------------------------------------------------------------
+
+
+
+A. Local Execution (Visual Studio 2022):
+
+   1. Open RaceDay.sln in Visual Studio 2022.
+
+   2. Configure Database Connection in RaceDay.Api/appsettings.json:
+
+        "ConnectionStrings": {
+
+          "DefaultConnection": "Server=localhost;Database=RaceDayDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True;"
+
+        }
+
+   3. In Package Manager Console (default project: RaceDay.Api):
+
+        Update-Database
+
+      (Or run /docs/RaceDay_Database.sql in SSMS).
+
+   4. Configure Azure Blob Storage in RaceDay.Api/appsettings.json:
+
+        "AzureBlobStorage": {
+
+          "ConnectionString": "<your-connection-string>",
+
+          "ContainerName": "raceday-media"
+
+        }
+
+   5. Configure Multiple Startup Projects (RaceDay.Api and RaceDay.Mvc).
+
+   6. Press F5 (API: https://localhost:5000/swagger | MVC: http://localhost:5001).
+
+
+
+B. Docker Container Execution (Part 3 Milestone):
+
+   1. Build Docker image from solution root:
+
+        docker build -f .\RaceDay\Dockerfile -t raceday-mvc:part3 .
+
+   2. Start the API on Windows host bound to all network interfaces:
+
+        dotnet run --project RaceDay.Api --urls http://0.0.0.0:5000
+
+   3. Run the MVC container connecting via host gateway:
+
+        docker run -d --name raceday-mvc -p 8080:8080 -e ApiSettings__BaseUrl=http://host.docker.internal:5000/ raceday-mvc:part3
+
+   4. Open http://localhost:8080 in your browser.
+
+
+
+--------------------------------------------------------------------------------
+
+6. AUTOMATED CI/CD & TESTING
+
+--------------------------------------------------------------------------------
+
+  - Local Test Execution:
+
+      dotnet test RaceDay.sln
+
+  - GitHub Actions (.github/workflows/ci.yml):
+
+      Automatically triggers on every push and pull request to 'main' or 'part3'.
+
+      Runs on ubuntu-latest, sets up .NET 8, restores packages, compiles all
+
+      projects in Release mode, and runs automated xUnit integration tests.
+
+
+
+--------------------------------------------------------------------------------
+
+7. REPOSITORY DELIVERABLES INDEX
+
+--------------------------------------------------------------------------------
+
+  /docs/RaceDay_ERD.pdf               : Six-table relational diagram
+
+  /docs/RaceDay_API_Endpoint_Plan.md  : REST API specification
+
+  /docs/RaceDay_Database.sql          : T-SQL schema and South African seed data
+
+  /RaceDay.Contracts/                 : Shared DTO POCO definitions
+
+  /RaceDay.Api/                       : Web API, EF Core DbContext, Controllers
+
+  /RaceDay.Api.Tests/                 : xUnit automated integration test suite
+
+  /RaceDay/                           : ASP.NET Core MVC front-end application
+
+  /RaceDay/Dockerfile                 : Multi-stage Linux container definition
+
+  /.dockerignore                      : Container build exclusion rules
+
+  /.github/workflows/ci.yml           : Continuous integration workflow
+
+
+
+--------------------------------------------------------------------------------
+
+8. REFERENCES & Tools
+
+--------------------------------------------------------------------------------
+
+  - Docker, 2024. Dockerize an ASP.NET Core application.
+
+    https://docs.docker.com/language/dotnet/
+
+  - GitHub, 2024. GitHub Actions: Building and testing .NET.
+
+    https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+  - Microsoft, 2024. Azure Blob Storage client library for .NET.
+
+    https://learn.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-dotnet
+
+  - Microsoft, 2024. Create Data Transfer Objects (DTOs).
+
+    https://learn.microsoft.com/en-us/aspnet/web-api/overview/data/using-web-api-with-entity-framework/part-5
+
+  - Microsoft, 2024. Integration tests in ASP.NET Core.
+
+    https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests
+
+  - Microsoft, 2024. Overview of Entity Framework Core.
+
+    https://learn.microsoft.com/en-us/ef/core/
+
+  - Microsoft, 2024. Session and state management in ASP.NET Core.
+
+    https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state
+
+  - OpenAI & GitHub, 2024. GitHub Copilot (Visual Studio 2022 Integration).
+
+    Used as an AI peer programmer for architectural suggestions, troubleshooting
+
+    Docker multi-stage build pathing, assisting with Razor view layouts,
+
+    refining CSS color palette classes, debugging EF Core model key constraints,
+
+    and generating xUnit integration test scaffolding.
+
+================================================================================
